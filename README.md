@@ -37,10 +37,10 @@ Here is what a sample response looks like:
 **Please make use of the Express Router.**
 
 ## Todos
-- [ ] GET /items - this should render a list of shopping items.
-- [ ] POST /items - this route should accept JSON data and add it to the shopping list.
-- [ ] GET /items/:name - this route should display a single item’s name and price.
-- [ ] PATCH /items/:name, this route should modify a single item’s name and/or price.
-- [ ] DELETE /items/:name - this route should allow you to delete a specific item from the array.
-- [ ] Error handling for all routes
+- [x] GET /items - this should render a list of shopping items.
+- [x] POST /items - this route should accept JSON data and add it to the shopping list.
+- [x] GET /items/:name - this route should display a single item’s name and price.
+- [x] PATCH /items/:name, this route should modify a single item’s name and/or price.
+- [x] DELETE /items/:name - this route should allow you to delete a specific item from the array.
+- [x] Error handling for all routes
 - [ ] Write tests for routes
