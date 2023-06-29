@@ -41,21 +41,13 @@ router.get("/:name", (req, res) => {
 /* updates item in fakeDb and returns json of updated item */
 
 router.patch("/:name", (req, res) => {
-    try {
         const foundItem = items.find(item => item.name === req.params.name)
         if (foundItem === undefined) {
             throw new ExpressError("item not found", 404)
         }
-        if (res.body.name) {
-            foundItem.name = res.body.name
-        }
-        if (res.body.price) {
-            foundItem.price = res.body.price
-        }
+        foundItem.name = req.body.name || foundItem.name
+        foundItem["price"] = req.body.price || foundItem.price
         res.json({ updated: { "name": foundItem.name, "price": foundItem.price } })
-    } catch (error) {
-        console.log(error)
-    }
 })
 
 /* removes item from fakeDb and returns  */

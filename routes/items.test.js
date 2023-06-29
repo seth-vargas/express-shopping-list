@@ -13,6 +13,7 @@ beforeEach(() => {
 
 afterEach(() => {
     items.length = 0
+    potato = { name: "potato", price: 2.99 }
 })
 
 describe("GET /items", () => {
@@ -28,7 +29,7 @@ describe("POST /items", () => {
         const newItem = { name: "apple", price: 3.99 }
         const response = await request(app).post("/items").send(newItem)
         expect(response.statusCode).toBe(201)
-        expect(response.body).toEqual({ added: { name: newItem.name, price: newItem.price } })
+        expect(response.body).toEqual({ added: { name: "apple", price: 3.99 } })
     })
 
     test("Creating a duplicate item", async () => {
@@ -50,7 +51,7 @@ describe("GET /items/:name", () => {
     test("Successfully gets item", async () => {
         const response = await request(app).get("/items/potato")
         expect(response.statusCode).toBe(200)
-        expect(response.body).toEqual({ name: potato.name, price: potato.price })
+        expect(response.body).toEqual({ name: "potato", price: 2.99 })
     })
 
     test("Gets item that is not in db", async () => {
@@ -61,22 +62,48 @@ describe("GET /items/:name", () => {
 })
 
 describe("PATCH /items/:name", () => {
-    test("Updates item info", async () => {
-        const response = await request(app).patch("/items/potato")
+    test("Updates item name", async () => {
+        const response = await request(app).patch("/items/potato").send({ name: "pot" })
         expect(response.statusCode).toBe(200)
-        expect(response.body).toEqual({ updated: { name: potato.name, price: potato.price } })
+        expect(response.body).toEqual({ updated: { name: "pot", price: 2.99 } })
     })
 
-    // test("Updates item not found in db", async () => {
-    //     // TODO
+    test("Updates item price", async () => {
+        const response = await request(app).patch("/items/potato").send({ price: 1.99 })
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual({ updated: { name: "potato", price: 1.99 } })
+    })
 
-    // })
+    test("Updates item with empty values", async () => {
+        const response = await request(app).patch("/items/potato").send({})
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual({ updated: { name: "potato", price: 2.99 } })
+    })
+
+    test("Update item not in db", async () => {
+        const response = await request(app).patch("/items/nothere").send({ name: "missing", price: 1.99 })
+        expect(response.statusCode).toBe(404)
+        expect(response.body).toEqual({ error: "item not found" })
+    })
 })
 
-// describe("DELETE /items/:name", () => {
-//     test("", async () => {
-//         const response = await request(app).delete()
-//         expect(response.statusCode).toBe()
-//         expect(response.body).toEqual()
-//     })
-// })
+describe("DELETE /items/:name", () => {
+    test("Deletes item from db", async () => {
+        const response = await request(app).delete("/items/potato")
+        expect(response.statusCode).toBe(200)
+        expect(response.body).toEqual({ message: "Deleted" })
+    })
+
+    test("Delete item not in db", async () => {
+        const response = await request(app).delete("/items/missing")
+        expect(response.statusCode).toBe(404)
+        expect(response.body).toEqual({ error: "item not found" })
+    })
+
+    test("Delete item twice in a row", async () => {
+        await request(app).delete("/items/potato")
+        const response = await request(app).delete("/items/potato")
+        expect(response.statusCode).toBe(404)
+        expect(response.body).toEqual({ error: "item not found" })
+    })
+})

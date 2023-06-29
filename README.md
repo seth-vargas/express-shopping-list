@@ -43,4 +43,4 @@ Here is what a sample response looks like:
 - [x] PATCH /items/:name, this route should modify a single item’s name and/or price.
 - [x] DELETE /items/:name - this route should allow you to delete a specific item from the array.
 - [x] Error handling for all routes
-- [ ] Write tests for routes
+- [x] Write tests for routes
